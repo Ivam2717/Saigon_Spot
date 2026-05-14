@@ -1,27 +1,42 @@
-
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from './modules/users/entities/user.entity';
+import { Category } from './modules/categories/entities/category.entity';
+import { Tag } from './modules/tags/entities/tag.entity';
+import { Place } from './modules/places/entities/place.entity';
+import { Review } from './modules/reviews/entities/review.entity';
+import { PlaceImage } from './modules/place-images/entities/place-image.entity';
+import { CategoriesModule } from './modules/categories/categories.module';
+import { PlacesModule } from './modules/places/places.module';
+import { PlaceImagesModule } from './modules/place-images/place-images.module';
+import { ReviewsModule } from './modules/reviews/reviews.module';
+import { TagsModule } from './modules/tags/tags.module';
+import { UsersModule } from './modules/users/users.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
+    ConfigModule.forRoot({ isGlobal: true }), // Cực kỳ quan trọng, cho phép dùng biến env toàn cục
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
+      useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        host:     config.get<string>('DB_HOST'),
-        port:     config.get<number>('DB_PORT'),
-        username: config.get<string>('DB_USERNAME'),
-        password: config.get<string>('DB_PASSWORD'),
-        database: config.get<string>('DB_NAME'),
-        autoLoadEntities: true,
-        synchronize: config.get<boolean>('DB_SYNC'),
+        host: configService.get<string>('DB_HOST'),
+        port: parseInt(configService.get<string>('DB_PORT') || '5432'),
+        username: configService.get<string>('DB_USERNAME'),
+        password: configService.get<string>('DB_PASSWORD'),
+        database: configService.get<string>('DB_NAME'),
+        entities: [User, Category, Tag, Place, Review, PlaceImage],
+        synchronize: true, // Chỉ để true khi dev
       }),
     }),
+    CategoriesModule,
+    PlacesModule,
+    PlaceImagesModule,
+    ReviewsModule,
+    TagsModule,
+    UsersModule
   ],
 })
 export class AppModule {}
