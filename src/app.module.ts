@@ -13,6 +13,7 @@ import { PlaceImagesModule } from './modules/place-images/place-images.module';
 import { ReviewsModule } from './modules/reviews/reviews.module';
 import { TagsModule } from './modules/tags/tags.module';
 import { UsersModule } from './modules/users/users.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -36,7 +37,8 @@ import { UsersModule } from './modules/users/users.module';
     PlaceImagesModule,
     ReviewsModule,
     TagsModule,
-    UsersModule
+    UsersModule,
+    AuthModule,
   ],
 })
 export class AppModule {}

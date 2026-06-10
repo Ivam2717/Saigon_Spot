@@ -8,6 +8,6 @@ import { ReviewsController } from './reviews.controller';
   imports: [TypeOrmModule.forFeature([Review])],
   controllers: [ReviewsController],
   providers: [ReviewsService],
-  exports: [TypeOrmModule], 
+  exports: [ReviewsService], 
 })
 export class ReviewsModule {}

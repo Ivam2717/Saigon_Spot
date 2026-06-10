@@ -30,7 +30,7 @@ export class Place {
   name!: string;
 
   @Column({ unique: true, length: 255 })
-  slug!: string;
+  slug!: string;  
 
   @Column({ nullable: true, type: 'text' })
   description!: string;
@@ -50,7 +50,7 @@ export class Place {
     srid: 4326,
     nullable: true,
   })
-  location!: GeoPoint | null;
+  location!: GeoPoint | null; 
 
   @Column({ name: 'cover_url', nullable: true, type: 'text' })
   coverUrl!: string;
