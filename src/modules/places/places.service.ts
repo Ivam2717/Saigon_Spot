@@ -25,7 +25,6 @@ export class PlacesService{
   async findAll(): Promise<Partial<Place>[]> {
     return this.placeRepo.find({
       where: { status: PlaceStatus.APPROVED },
-      relations: ['category'],               // JOIN category để trả tên
       select: {
         id:          true,
         name:        true,
@@ -40,7 +39,7 @@ export class PlacesService{
           name: true,
         },
       },
-      order: { avgRating: 'DESC' },          // sort: rating cao nhất lên đầu
+      order: { avgRating: 'DESC' },          
     });
   }
   async findOne(id: string): Promise<Place>{
@@ -64,7 +63,6 @@ export class PlacesService{
       throw new ConflictException(`Slug "${dto.slug}" đã tồn tại`);
     }
 
-    // 2. Kiểm tra categoryId hợp lệ (nếu có truyền vào)
     let category: Category | null = null;
     if (dto.categoryId) {
       category = await this.categoryRepo.findOne({
@@ -144,5 +142,31 @@ export class PlacesService{
       throw new ForbiddenException('Hãy đăng nhập để thực hiện chức năng này');
     }
     return {message:'Đã xóa địa điểm thành công'}
+  }
+  async findAllAdmin():Promise<Place[]>{
+    return this.placeRepo.find({
+      relations:['catgory','createdBy'],
+      select:{
+        id: true,
+        name: true,
+        address: true,
+        district: true,
+        status: true,
+        avgRating: true,
+        reviewCount: true,
+        createdAt: true,
+        category: {id: true, name:true},
+        createdBy: {id:true,  fullName:true, email:true}
+      },
+      order:{ createdAt: 'DESC'}
+    })
+  }
+  async updateStatus(id: string, status: PlaceStatus): Promise<Place>{
+    const place = await this.placeRepo.findOne({where: {id}});
+    if(!place){
+      throw new NotFoundException (`Place #${id} không tồn tại`)
+    }
+    place.status= status
+    return this.placeRepo.save(place)
   }
 }
