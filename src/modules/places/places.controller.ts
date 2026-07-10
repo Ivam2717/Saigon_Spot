@@ -18,6 +18,22 @@ export class PlacesController{
     findAll() {
         return this.placesService.findAll();
     }
+    @Get('admin')
+    @UseGuards(JwtAuthGuard,RolesGuard)
+    @Roles('admin')
+    findAllAdmin(){
+        return this.placesService.findAllAdmin();
+    }
+    @Patch('admin/:id/status')
+    @UseGuards(JwtAuthGuard,RolesGuard)
+    @Roles('admin')
+    updateStatus(
+        @Param('id',ParseUUIDPipe) id: string,
+        @Body() dto: UpdateStatusDto
+    ){
+        return this.placesService.updateStatus(id, dto.status);
+    }
+    
     @Get(':id')
     findOne(@Param('id', ParseUUIDPipe)id:string){
         return this.placesService.findOne(id);
@@ -52,20 +68,8 @@ export class PlacesController{
         return this.placesService.remove(id,req.user.id)
     }
 
-    @Get('admin/places')
-    @UseGuards(JwtAuthGuard,RolesGuard)
-    @Roles('admin')
-    findAllAdmin(){
-        return this.placesService.findAllAdmin();
-    }
+    
 
-    @Patch('admin/places/:id/status')
-    @UseGuards(JwtAuthGuard,RolesGuard)
-    @Roles('admin')
-    updateStatus(
-        @Param('id',ParseUUIDPipe) id: string,
-        @Body() dto: UpdateStatusDto
-    ){
-        return this.placesService.updateStatus(id, dto.status);
-    }
+    
+    
 }

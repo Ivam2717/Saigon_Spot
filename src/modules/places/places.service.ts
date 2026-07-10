@@ -145,7 +145,7 @@ export class PlacesService{
   }
   async findAllAdmin():Promise<Place[]>{
     return this.placeRepo.find({
-      relations:['catgory','createdBy'],
+      relations:['category','createdBy'],
       select:{
         id: true,
         name: true,
